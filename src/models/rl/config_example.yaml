@@ -1,0 +1,73 @@
+# SAC Training Configuration Example
+# This file shows all configurable parameters for training a SAC agent
+
+# Environment Configuration
+environment:
+  initial_balance: 100000  # Starting capital
+  transaction_cost: 0.001  # 0.1% transaction cost
+  slippage: 0.0005         # 0.05% slippage
+  max_position_size: 1.0   # Maximum position as fraction of portfolio
+  lookback_window: 20      # Historical data points in observation
+  reward_type: "sharpe"    # Options: sharpe, sortino, calmar, returns
+  risk_free_rate: 0.02     # Annual risk-free rate (2%)
+  reward_scaling: 100.0    # Scaling factor for rewards
+
+  # Features to include in state
+  features:
+    - close
+    - volume
+    - returns
+    - sma_10
+    - sma_30
+    - volatility
+
+# SAC Agent Configuration
+agent:
+  # Network architecture
+  hidden_dims: [256, 256]   # Hidden layer sizes
+  use_state_norm: true      # Use state normalization
+
+  # Learning parameters
+  learning_rate: 0.0003     # Learning rate for all networks
+  gamma: 0.99               # Discount factor
+  tau: 0.005                # Soft update coefficient
+  batch_size: 256           # Training batch size
+
+  # Entropy tuning
+  auto_entropy_tuning: true # Automatic temperature tuning
+  alpha: 0.2                # Initial entropy coefficient (if not auto)
+  target_entropy: null      # Target entropy (null = -action_dim)
+
+  # Replay buffer
+  buffer_size: 1000000      # Replay buffer capacity
+  use_prioritized_replay: false  # Use PER (slower but better)
+  per_alpha: 0.6            # PER priority exponent
+  per_beta: 0.4             # PER importance sampling exponent
+
+# Training Configuration
+training:
+  num_episodes: 1000        # Total training episodes
+  max_steps_per_episode: null  # Max steps per episode (null = no limit)
+  warmup_steps: 1000        # Random exploration steps
+  train_freq: 1             # Training frequency (steps)
+  gradient_steps: 1         # Gradient updates per training
+  eval_freq: 50             # Evaluation frequency (episodes)
+  eval_episodes: 10         # Number of evaluation episodes
+  save_freq: 100            # Checkpoint save frequency (episodes)
+
+# Data Configuration
+data:
+  train_split: 0.8          # Fraction of data for training
+  data_path: null           # Path to data CSV (null = generate synthetic)
+
+# Logging and Output
+logging:
+  save_dir: "./checkpoints"
+  log_level: "INFO"
+  tensorboard: false        # Use TensorBoard logging
+
+# System Configuration
+system:
+  device: "auto"            # Options: auto, cpu, cuda
+  seed: 42                  # Random seed (null = random)
+  num_workers: 1            # Number of parallel workers
